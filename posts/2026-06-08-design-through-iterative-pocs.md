@@ -14,6 +14,8 @@ How I turn ideas into tools I actually use. Cut the lengthy upfront design debat
 
 I used to spend days talking to agents before any code got written. I'd draft a design doc. I'd argue about the interface. I'd insist on TDD. I'd build out a comprehensive eval set so the agent could run in a loop for hours or days, and hand me back a perfect, beautiful piece of software at the end.
 
+Reader, I did this for months. It felt very serious. It felt like real engineering.
+
 I never got the perfect, beautiful piece of software. Not once.
 
 What I always got was something that compiled, passed every test I asked agents to write, and missed three things I only noticed the first time I tried to use it for real. The design doc was wrong because I was guessing what I'd need. The eval set was wrong because I was guessing what success looked like. The agent did what I asked, mostly. Sometimes it took shortcuts I'd never have spotted from reading the diff. Either way, the cracks only showed when rubber hit the road.
@@ -24,7 +26,7 @@ The amount of agent time I burned writing the wrong thing very correctly was eno
 
 Now I do this. Idea lands. I capture it. Then I ask the agent to build the smallest possible proof-of-concept that does the thing end-to-end. A few scripts. A config file if it earns its keep. Tests for the behavior I actually care about, because tests are cheap and they catch regressions. What I leave out is *excess abstraction*: no premature interfaces, no plugin systems, no "what if we want to swap this out later," no factories built to make a future I haven't seen easier. My rule of thumb is to wait for three or more real occurrences of a pattern before pulling it into an abstraction. Two looks like a coincidence. Three is a shape. And AI agents refactor fast enough now that waiting costs almost nothing. When the third occurrence shows up, the agent collapses all three into the right abstraction in one pass. Working, opinionated, concrete.
 
-Then I use it. Every time it falls short, I tell the agent: "this didn't work because X." The agent fixes the bug or implements the feature. Then I dogfood it again.
+Then I use it. Every time it falls short, I tell the agent: "this didn't work because X." The agent fixes the bug or implements the feature. Then I dogfood it again. Sometimes the bug is in me, not in the code, and the agent gently points this out. I am learning to take it well.
 
 After about ten real uses, I know what the thing actually wants to be. *Then* I let the agent harden it. The interface settles, because by now I know what I actually reach for. The design doc, when it gets written at all, gets written after the design is already in the code.
 
@@ -44,7 +46,7 @@ The clearest example I have is a multi-agent dispatcher I built, a tool that rou
 
 - **Day 1 (initial scaffold).** One topic, one backend, no concurrency story, no resets, no context sharing. It worked for me, on one chat, badly. The commit message was literally "initial scaffold." That was the POC.
 - **Day 1, six hours later.** I asked two reviewer agents to look at it. They flagged scope gaps. Backends weren't stateless. Context wasn't shared between them. "This is going to bite you." I documented the gaps rather than fixing them, because I wanted to confirm they actually mattered through use before paying to fix them.
-- **A few days in.** The first big rewrite went in. Backends became stateless. Switching between agents mid-conversation preserved context. This happened *after* I'd used the quick version enough to know the reviewers were right. If I'd fixed it on Day 1, I'd have built the wrong abstraction. By the time I rewrote it I knew the shape.
+- **A few days in.** The first big rewrite went in. Backends became stateless. Switching between agents mid-conversation preserved context. This happened *after* I'd used the quick version enough to know the reviewers were right, which is a polite way of saying I had to feel the pain personally before I would accept it.
 - **Same day, multiple ships.** A metrics endpoint, a rewind command, a per-topic system-prompt override. These were features I only realized I needed by using the thing for two days.
 - **The week after.** Tool passthrough, a native-tools bug fix in one of the backend integrations, a plugin adapter for another, a safe compactor wiring pass. Each one was a real bug or gap I hit, not a hypothetical I planned for.
 - **About two weeks in.** The project's developer guide grew a numbered list of safety invariants, over a dozen of them, each one a regression I caught and didn't want to re-litigate. That list is the design doc, and it got written *after* the system existed, because that's when I knew what the invariants needed to be.
